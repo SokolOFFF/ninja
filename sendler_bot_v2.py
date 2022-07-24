@@ -38,21 +38,29 @@ def find_sellers_for_stable_coin():
             "TE": "Trailers",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
         }
-        respond = requests.post(url=url, headers=headers, json=param)
-        if respond.status_code == 200:
-            data = respond.json()['data']
-            for ad in data:
-                seller = {}
-                seller['nickname'] = ad['advertiser']['nickName']
-                seller['price'] = Decimal(ad['adv']['price'])
-                seller['minamount'] = Decimal(ad['adv']['minSingleTransAmount'])
-                seller['maxamount'] = Decimal(ad['adv']['dynamicMaxSingleTransAmount'])
-                seller['available'] = Decimal(ad['adv']['tradableQuantity'])
-                seller['finishrate'] = Decimal(ad['advertiser']['monthFinishRate']) * 100
-                sellers.append(seller)
-        else:
-            print(f"Cant connect to Binance P2P, status code: {respond.status_code}")
-        sellersForSCoin[scoin] = sellers
+        try:
+            respond = requests.post(url=url, headers=headers, json=param)
+            if respond.status_code == 200:
+                data = respond.json()['data']
+                for ad in data:
+                    seller = {}
+                    seller['nickname'] = ad['advertiser']['nickName']
+                    seller['price'] = Decimal(ad['adv']['price'])
+                    seller['minamount'] = Decimal(ad['adv']['minSingleTransAmount'])
+                    seller['maxamount'] = Decimal(ad['adv']['dynamicMaxSingleTransAmount'])
+                    seller['available'] = Decimal(ad['adv']['tradableQuantity'])
+                    seller['finishrate'] = Decimal(ad['advertiser']['monthFinishRate']) * 100
+                    sellers.append(seller)
+                sellersForSCoin[scoin] = sellers
+            else:
+                print(f"Cant connect to Binance P2P, status code: {respond.status_code}")
+                find_sellers_for_stable_coin()
+                return 1
+        except Exception as e:
+            print("Error occurred while parsing sellers. Error: ", e)
+            find_sellers_for_stable_coin()
+            return 1
+
 
 def find_buyers_for_stable_coin():
     url = config.BP2P_URL
@@ -80,32 +88,44 @@ def find_buyers_for_stable_coin():
             "TE": "Trailers",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
         }
-        respond = requests.post(url=url, headers=headers, json=param)
-        if respond.status_code == 200:
-            data = respond.json()['data']
-            for ad in data:
-                buyer = {}
-                buyer['nickname'] = ad['advertiser']['nickName']
-                buyer['price'] = Decimal(ad['adv']['price'])
-                buyer['minamount'] = Decimal(ad['adv']['minSingleTransAmount'])
-                buyer['maxamount'] = Decimal(ad['adv']['dynamicMaxSingleTransAmount'])
-                buyer['available'] = Decimal(ad['adv']['tradableQuantity'])
-                buyer['finishrate'] = Decimal(ad['advertiser']['monthFinishRate']) * 100
-                buyers.append(buyer)
-        else:
-            print(f"Cant connect to Binance P2P, status code: {respond.status_code}")
-        buyersForSCoin[scoin] = buyers
+        try:
+            respond = requests.post(url=url, headers=headers, json=param)
+            if respond.status_code == 200:
+                data = respond.json()['data']
+                for ad in data:
+                    buyer = {}
+                    buyer['nickname'] = ad['advertiser']['nickName']
+                    buyer['price'] = Decimal(ad['adv']['price'])
+                    buyer['minamount'] = Decimal(ad['adv']['minSingleTransAmount'])
+                    buyer['maxamount'] = Decimal(ad['adv']['dynamicMaxSingleTransAmount'])
+                    buyer['available'] = Decimal(ad['adv']['tradableQuantity'])
+                    buyer['finishrate'] = Decimal(ad['advertiser']['monthFinishRate']) * 100
+                    buyers.append(buyer)
+                buyersForSCoin[scoin] = buyers
+            else:
+                print(f"Cant connect to Binance P2P, status code: {respond.status_code}")
+                find_buyers_for_stable_coin()
+                return 1
+        except Exception as e:
+            print("Error occurred while parsing buyers. Error: ", e)
+            find_buyers_for_stable_coin()
+            return 1
+
 
 
 def get_exchange_rate():
-    respond = requests.get(config.TINKOFF_EXCHANGE_API)
-    if respond.status_code == 200:
-        rates = respond.json()['payload']['rates']
-        for rate in rates:
-            if rate['category'] == 'DebitCardsTransfers' and rate['fromCurrency']['name'] == 'USD' and rate['toCurrency']['name'] == 'RUB':
-                tinkoffRate = Decimal(rate['buy'])
-                return tinkoffRate
-    else:
+    try:
+        respond = requests.get(config.TINKOFF_EXCHANGE_API)
+        if respond.status_code == 200:
+            rates = respond.json()['payload']['rates']
+            for rate in rates:
+                if rate['category'] == 'DebitCardsTransfers' and rate['fromCurrency']['name'] == 'USD' and rate['toCurrency']['name'] == 'RUB':
+                    tinkoffRate = Decimal(rate['buy'])
+                    return tinkoffRate
+        else:
+            return get_exchange_rate()
+    except Exception as e:
+        print("Error occurred while parsing rate. Error: ", e)
         return get_exchange_rate()
 
 
@@ -122,8 +142,11 @@ def sendAll(text):
             print(e, id)
 
 def main():
+    print('finding buyers..')
     find_buyers_for_stable_coin()
+    print('finding sellers..')
     find_sellers_for_stable_coin()
+    print('finding exchange rate..')
     tinkoffRate = get_exchange_rate()
 
     for scoin in coins_and_links.stable_coins:
