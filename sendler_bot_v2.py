@@ -174,8 +174,8 @@ def main():
                                         f"   <i>finish rate:</i> <u>{str(p2pbuyer['finishrate'])[0:5:]}%</u>\n\n" \
                                         f"   <i>Buyer info:</i>\n" \
                                         f"   <i>available to buy:</i> <b>{p2pseller['available']} {scoin}</b>,\n" \
-                                        f"   <i>min amount:</i> <b>{p2pseller['minamount']} RUBs</b>,\n" \
-                                        f"   <i>max amount:</i> <b>{p2pseller['maxamount']} RUBs</b>\n" \
+                                        f"   <i>min amount:</i> <b>{p2pseller['minamount']} USDs</b>,\n" \
+                                        f"   <i>max amount:</i> <b>{p2pseller['maxamount']} USDs</b>\n" \
                                         f"   <i>nick name:</i> <u>{p2pseller['nickname']}</u>\n" \
                                         f"   <i>finish rate:</i> <u>{str(p2pseller['finishrate'])[0:5:]}%</u>\n\n" \
                                         f"<i>Profit:</i>\n" \
