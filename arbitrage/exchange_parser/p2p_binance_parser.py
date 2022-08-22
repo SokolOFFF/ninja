@@ -31,7 +31,7 @@ def get_new_p2p_orders():
                 'asset': coin.name,
                 'fiat': payment.fiat.name,
                 'page': 1,
-                'payTypes': payment.name,
+                'payTypes': [payment.name],
                 'rows': 10,
                 'tradeType': trade_type
             }
@@ -41,11 +41,13 @@ def get_new_p2p_orders():
             if respond.status_code == 200:
                 try:
                     data = respond.json()['data']
-                    for order in data:
-                        P2POrder.objects.create(payment=payment, coin=coin,
-                                                rate=float(order['adv']['price']),
-                                                author=order['advertiser']['nickName'],
-                                                type=trade_type, )
+                    if not data is None:
+                        # TODO: make insertion using only 1 request
+                        for order in data:
+                            P2POrder.objects.create(payment=payment, coin=coin,
+                                                    rate=float(order['adv']['price']),
+                                                    author=order['advertiser']['nickName'],
+                                                    type=trade_type, )
                 except Exception as e:
                     raise ValueError("Error occurred while parsing sellers. Error: ", e)
             else:
