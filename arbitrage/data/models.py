@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -27,3 +29,4 @@ class P2POrder(models.Model):
     author = models.CharField(max_length=50)
     coin = models.ForeignKey(Coin, on_delete=models.SET_NULL, null=True)
     type = models.CharField(choices=TYPES_CHOICES, max_length=4)
+    parsing_time = models.DateTimeField(default=datetime.now)
