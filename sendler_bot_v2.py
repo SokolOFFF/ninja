@@ -189,5 +189,5 @@ def main():
 
 
 print('SEARCHING FOR BITCHES!!!')
-while(True):
+while True:
     main()
