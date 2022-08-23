@@ -20,4 +20,4 @@ class Command(BaseCommand):
         qiwi_rub = Payment.objects.get_or_create(name='QIWI', fiat=rub)[0]
 
         usdt = Coin.objects.get_or_create(name='USDT')[0]
-        busd = Coin.objects.get_or_create(name='BUSB')[0]
+        busd = Coin.objects.get_or_create(name='BUSD')[0]
