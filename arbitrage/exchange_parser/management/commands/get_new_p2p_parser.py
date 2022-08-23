@@ -11,4 +11,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         while True:
             get_new_p2p_orders()
-            sleep(3)
+            sleep(10)
