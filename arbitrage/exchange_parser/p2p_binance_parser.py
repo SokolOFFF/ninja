@@ -33,7 +33,7 @@ def get_new_p2p_orders():
                     'fiat': payment.fiat.name,
                     'page': 1,
                     'payTypes': [payment.name],
-                    'rows': 30,
+                    'rows': 10,
                     'tradeType': trade_type[0]
                 }
                 print(param)
@@ -48,10 +48,12 @@ def get_new_p2p_orders():
                                 P2POrder.objects.create(payment=payment, coin=coin,
                                                         rate=float(order['adv']['price']),
                                                         author=order['advertiser']['nickName'],
-                                                        type=trade_type, )
+                                                        type=trade_type[0], )
+                        else:
+                            print(f'Response is empty. Respond: {respond.json()}')
                     except Exception as e:
                         raise ValueError("Error occurred while parsing sellers. Error: ", e)
                 else:
                     raise RuntimeError(f'Cant connect to Binance P2P, status code: {respond.status_code}')
-
+    print('Finish of p2p orders getting')
 # TODO: make deletion of old orders
