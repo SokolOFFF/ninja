@@ -43,7 +43,7 @@ class P2POrder(models.Model):
         return f'P2P order {self.type} by {self.author} ' \
                f'for {self.coin} by {self.payment} with {self.rate}'
 
-
+# TODO: rewrite it to adequate format
 class Currencies(models.Model):
     USDRUB_FIGI = 'USD000UTSTOM'
     EURRUB_FIGI = 'EUR000UTSTOM'
