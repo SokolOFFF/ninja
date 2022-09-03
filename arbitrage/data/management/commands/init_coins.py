@@ -11,11 +11,11 @@ class Command(BaseCommand):
         usd = Fiat.objects.get_or_create(name='USD')[0]
         euro = Fiat.objects.get_or_create(name='EUR')[0]
 
-        tink_rub = Payment.objects.get_or_create(name='Tinkoff', fiat=rub)[0]
-        tink_usd = Payment.objects.get_or_create(name='Tinkoff', fiat=usd)[0]
-        tink_euro = Payment.objects.get_or_create(name='Tinkoff', fiat=euro)[0]
+        tink_rub = Payment.objects.get_or_create(name='TinkoffNew', fiat=rub)[0]
+        tink_usd = Payment.objects.get_or_create(name='TinkoffNew', fiat=usd)[0]
+        tink_euro = Payment.objects.get_or_create(name='TinkoffNew', fiat=euro)[0]
 
-        raif_rub = Payment.objects.get_or_create(name='Raiffeisenbank', fiat=rub)[0]
+        raif_rub = Payment.objects.get_or_create(name='RaiffeisenBankRussia', fiat=rub)[0]
 
         qiwi_rub = Payment.objects.get_or_create(name='QIWI', fiat=rub)[0]
 
