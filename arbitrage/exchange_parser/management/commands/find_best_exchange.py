@@ -40,15 +40,15 @@ def check_var_1():
     usdt = Coin.objects.get(name='USDT')
 
     rub_payments = Payment.objects.filter(fiat=rub).all()
-    tin_usd = Payment.objects.get(name='Tinkoff', fiat=usd)
+    tin_usd = Payment.objects.get(name='TinkoffNew', fiat=usd)
 
     now = datetime.now()
     start = now - timedelta(minutes=3)
     buy_rub = P2POrder.objects.filter(type='BUY', payment__in=rub_payments, coin=usdt, parsing_time__range=[start, now])
-    print(buy_rub)
     if len(buy_rub) == 0:
         print('No orders for selling of RUB')
         return
+
     buy_rub = sorted(buy_rub, key=lambda x: x.rate)[0]
 
     sell_usd = P2POrder.objects.filter(type='SELL', payment=tin_usd, coin=usdt, parsing_time__range=[start, now])
@@ -58,10 +58,11 @@ def check_var_1():
     sell_usd = sorted(sell_usd, key=lambda x: x.rate, reverse=True)[0]
     result = 1 / buy_rub.rate * sell_usd.rate * USD_RUB
 
-    if result > 1.01:
+    if result > 1:
         print(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,
                                   profit=(result - 1) * 100
                                   ))
+
 
 
 #TODO: rewrite getting usd figi to adequate format (line 32)
@@ -72,8 +73,8 @@ def check_var_2():
     usd = Fiat.objects.get(name='USD')
     usdt = Coin.objects.get(name='USDT')
 
-    tin_rub = Payment.objects.get(name='Tinkoff', fiat=rub)
-    tin_usd = Payment.objects.get(name='Tinkoff', fiat=usd)
+    rub_payments = Payment.objects.filter(fiat=rub).all()
+    tin_usd = Payment.objects.get(name='TinkoffNew', fiat=usd)
 
     now = datetime.now()
     start = now - timedelta(minutes=3)
@@ -83,14 +84,14 @@ def check_var_2():
         return
     buy_usd = sorted(buy_usd, key=lambda x: x.rate)[0]
 
-    sell_rub = P2POrder.objects.filter(type='SELL', payment=tin_rub, coin=usdt, parsing_time__range=[start, now])
+    sell_rub = P2POrder.objects.filter(type='SELL', payment__in=rub_payments, coin=usdt, parsing_time__range=[start, now])
     if len(sell_rub) == 0:
         print('No orders for buying of RUB')
         return
     sell_rub = sorted(sell_rub, key=lambda x: x.rate, reverse=True)[0]
     result = 1 / USD_RUB / buy_usd.rate * sell_rub.rate
 
-    if result > 1.01:
+    if result > 1:
         print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,
                                   profit=(result - 1) * 100
                                   ))
