@@ -44,6 +44,12 @@ def check_var_1():
 
     now = datetime.now()
     start = now - timedelta(minutes=3)
+
+    old_orders = P2POrder.objects.filter(parsing_time__lte=start)
+    if len(old_orders) > 0:
+        print('Deleting old orders')
+        old_orders.delete()
+
     buy_rub = P2POrder.objects.filter(type='BUY', payment__in=rub_payments, coin=usdt, parsing_time__range=[start, now])
     if len(buy_rub) == 0:
         print('No orders for selling of RUB')
@@ -78,6 +84,12 @@ def check_var_2():
 
     now = datetime.now()
     start = now - timedelta(minutes=3)
+
+    old_orders = P2POrder.objects.filter(parsing_time__lte=start)
+    if len(old_orders) > 0:
+        print('Deleting old orders')
+        old_orders.delete()
+
     buy_usd = P2POrder.objects.filter(type='BUY', payment=tin_usd, coin=usdt, parsing_time__range=[start, now])
     if len(buy_usd) == 0:
         print('No orders for selling of USD')
