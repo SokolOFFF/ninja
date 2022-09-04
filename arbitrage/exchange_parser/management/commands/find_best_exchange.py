@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import datetime, timedelta
 
-from data.models import Fiat, P2POrder, Payment, Coin, Currencies
+from data.models import Fiat, P2POrder, Payment, Coin, Currency
 
 from django.core.management.base import BaseCommand
 
@@ -31,9 +31,8 @@ def find_best_exchange():
     check_var_2()
     print('-------------------------------')
 
-#TODO: rewrite getting usd figi to adequate format (line 32)
 def check_var_1():
-    USD_RUB = get_rate_of(Currencies.objects.get(name='USDRUB').figi)
+    USD_RUB = get_rate_of(Currency.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
     usd = Fiat.objects.get(name='USD')
@@ -70,10 +69,8 @@ def check_var_1():
                                   ))
 
 
-
-#TODO: rewrite getting usd figi to adequate format (line 32)
 def check_var_2():
-    USD_RUB = get_rate_of(Currencies.objects.get(name='USDRUB').figi)
+    USD_RUB = get_rate_of(Currency.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
     usd = Fiat.objects.get(name='USD')
