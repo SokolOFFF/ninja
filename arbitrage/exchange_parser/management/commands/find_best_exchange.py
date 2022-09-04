@@ -33,7 +33,7 @@ def find_best_exchange():
 
 #TODO: rewrite getting usd figi to adequate format (line 32)
 def check_var_1():
-    USD_RUB = get_rate_of(Currencies.USDRUB_FIGI)
+    USD_RUB = get_rate_of(Currencies.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
     usd = Fiat.objects.get(name='USD')
@@ -73,7 +73,7 @@ def check_var_1():
 
 #TODO: rewrite getting usd figi to adequate format (line 32)
 def check_var_2():
-    USD_RUB = get_rate_of(Currencies.USDRUB_FIGI)
+    USD_RUB = get_rate_of(Currencies.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
     usd = Fiat.objects.get(name='USD')

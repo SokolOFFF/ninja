@@ -27,8 +27,9 @@ class Coin(models.Model):
         return self.name
 
 
-# TODO: add amount range and rates
+# TODO: add amount range
 # TODO: add order link
+# TODO: add user model
 class P2POrder(models.Model):
     TYPES_CHOICES = (('BUY', 'BUY'),
                      ('SELL', 'SELL')
@@ -43,8 +44,9 @@ class P2POrder(models.Model):
         return f'P2P order {self.type} by {self.author} ' \
                f'for {self.coin} by {self.payment} with {self.rate}'
 
-# TODO: rewrite it to adequate format
 class Currencies(models.Model):
-    USDRUB_FIGI = 'USD000UTSTOM'
-    EURRUB_FIGI = 'EUR000UTSTOM'
-    GBPRUB_FIGI = 'TCS0013HQ5F0'
+    name = models.CharField(max_length=10, default='USDRUB')
+    figi = models.CharField(max_length=20, default='000000')
+
+    def __str__(self):
+        return f'Currency name: {self.name}, figi: {self.figi}'

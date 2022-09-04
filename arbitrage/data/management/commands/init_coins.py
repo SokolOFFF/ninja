@@ -1,4 +1,4 @@
-from data.models import Fiat, Payment, Coin
+from data.models import Fiat, Payment, Coin, Currencies
 
 from django.core.management.base import BaseCommand
 
@@ -21,3 +21,7 @@ class Command(BaseCommand):
 
         usdt = Coin.objects.get_or_create(name='USDT')[0]
         busd = Coin.objects.get_or_create(name='BUSD')[0]
+
+        usd_rub_rate = Currencies.objects.get_or_create(name='USDRUB', figi='USD000UTSTOM')[0]
+        eur_rub_rate = Currencies.objects.get_or_create(name='EURRUB', figi='EUR000UTSTOM')[0]
+        gbp_rub_rate = Currencies.objects.get_or_create(name='GBPRUB', figi='TCS0013HQ5F0')[0]
