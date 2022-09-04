@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 
 from exchange_parser.tinkoff_rates_parser import get_rate_of
 
+from exchange_parser.sender_bot import sendAll
 
 class Command(BaseCommand):
     help = ''
@@ -67,6 +68,9 @@ def check_var_1():
         print(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,
                                   profit=(result - 1) * 100
                                   ))
+        sendAll(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,
+                                  profit=(result - 1) * 100
+                                  ))
 
 
 def check_var_2():
@@ -104,5 +108,7 @@ def check_var_2():
         print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,
                                   profit=(result - 1) * 100
                                   ))
-
+        sendAll(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,
+                                  profit=(result - 1) * 100
+                                  ))
 
