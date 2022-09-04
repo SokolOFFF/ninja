@@ -57,3 +57,6 @@ class User(models.Model):
     money_amount = models.IntegerField(default=15000)
     spread = models.FloatField(default=1.0)
     is_subscribed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Telegram id: {self.telegram_id}, money amount: {self.money_amount}, spread: {self.spread}, is subs: {self.is_subscribed}'
