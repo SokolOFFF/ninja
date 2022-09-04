@@ -44,9 +44,16 @@ class P2POrder(models.Model):
         return f'P2P order {self.type} by {self.author} ' \
                f'for {self.coin} by {self.payment} with {self.rate}'
 
-class Currencies(models.Model):
+class Currency(models.Model):
     name = models.CharField(max_length=10, default='USDRUB')
     figi = models.CharField(max_length=20, default='000000')
 
     def __str__(self):
         return f'Currency name: {self.name}, figi: {self.figi}'
+
+
+class User(models.Model):
+    telegram_id = models.CharField(max_length= 20)
+    money_amount = models.IntegerField(default=15000)
+    spread = models.FloatField(default=1.0)
+    is_subscribed = models.BooleanField(default=False)
