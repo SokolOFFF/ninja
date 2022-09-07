@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import datetime, timedelta
 
-from data.models import Fiat, P2POrder, Payment, Coin, Currency
+from data.models import Fiat, P2POrder, Payment, Coin, Currency, Link
 
 from django.core.management.base import BaseCommand
 
@@ -21,6 +21,42 @@ class Command(BaseCommand):
 MSG_TEMPLATE = "Found exchange rate with {profit:.2f} %:" \
                "\n- {order1} " \
                "\n- {order2} "
+
+def msg_template(circle_num, profit, order1, order2):
+    if circle_num == 1:
+        link_short_name_order_1 = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=order1.coin.name,
+                                                                                fiat=order1.payment.fiat.name,
+                                                                                payment=order1.payment.name,
+                                                                                type=order1.type)
+        link_short_name_order_2 = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=order2.coin.name,
+                                                                                fiat=order2.payment.fiat.name,
+                                                                                payment=order2.payment.name,
+                                                                                type=order2.type)
+
+        return f'Found exchange rate with {profit:.2f}:' \
+               f'\n- {order1}' \
+               f'\n   link: {Link.objects.get(short_name=link_short_name_order_1).link}' \
+               f'\n- {order2}' \
+               f'\n   link: {Link.objects.get(short_name=link_short_name_order_2).link}' \
+               f'\n- Exchange on Tinkoff Investments' \
+               f'\n   link: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}'
+    elif circle_num == 2:
+        link_short_name_order_1 = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=order1.coin.name,
+                                                                                fiat=order1.payment.fiat.name,
+                                                                                payment=order1.payment.name,
+                                                                                type=order1.type)
+        link_short_name_order_2 = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=order2.coin.name,
+                                                                                fiat=order2.payment.fiat.name,
+                                                                                payment=order2.payment.name,
+                                                                                type=order2.type)
+
+        return f'Found exchange rate with {profit:.2f}:' \
+               f'\n- Exchange on Tinkoff Investments' \
+               f'\n   link: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}' \
+               f'\n- {order1}' \
+               f'\n   link: {Link.objects.get(short_name=link_short_name_order_1).link}' \
+               f'\n- {order2}' \
+               f'\n   link: {Link.objects.get(short_name=link_short_name_order_2).link}'
 
 
 def find_best_exchange():
@@ -65,12 +101,11 @@ def check_var_1():
     result = 1 / buy_rub.rate * sell_usd.rate * USD_RUB
 
     if result > 1:
-        print(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,
-                                  profit=(result - 1) * 100
-                                  ))
-        sendAll(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,
-                                  profit=(result - 1) * 100
-                                  ))
+        print(msg_template(1, (result - 1) * 100, buy_rub, sell_usd))
+        sendAll(msg_template(1, (result - 1) * 100, buy_rub, sell_usd))
+
+    #print(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,profit=(result - 1) * 100))
+
 
 
 def check_var_2():
@@ -105,10 +140,9 @@ def check_var_2():
     result = 1 / USD_RUB / buy_usd.rate * sell_rub.rate
 
     if result > 1:
-        print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,
-                                  profit=(result - 1) * 100
-                                  ))
-        sendAll(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,
-                                  profit=(result - 1) * 100
-                                  ))
+        sendAll(msg_template(2, (result - 1) * 100, buy_usd, sell_rub))
+        print(msg_template(2, (result - 1) * 100, buy_usd, sell_rub))
+
+    #print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,profit=(result - 1) * 100))
+
 
