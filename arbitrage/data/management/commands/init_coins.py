@@ -34,41 +34,41 @@ class Command(BaseCommand):
 
         # Links table creation
             # TINKOFF BANK P2P BINANCE
-        p2pbin_usdtrub_buy_tinkoff = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_TINKOFF_BUY',
+        p2pbin_usdtrub_buy_tinkoff = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_TinkoffNew_BUY',
                                                                 link='https://p2p.binance.com/en/trade/TinkoffNew/USDT?fiat=RUB',
                                                                 description='Link to buy USDT by Tinkoff RUBs on P2P Binance')
-        p2pbin_usdtrub_sell_tinkoff = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_TINKOFF_SELL',
+        p2pbin_usdtrub_sell_tinkoff = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_TinkoffNew_SELL',
                                                                 link='https://p2p.binance.com/en/trade/sell/USDT?fiat=RUB&payment=TinkoffNew',
                                                                 description='Link to sell USDT by Tinkoff RUBs on P2P Binance')
-        p2pbin_usdtusd_sell_tinkoff = Link.objects.get_or_create(short_name='USDTUSD_P2PBIN_TINKOFF_SELL',
+        p2pbin_usdtusd_sell_tinkoff = Link.objects.get_or_create(short_name='USDTUSD_P2PBIN_TinkoffNew_SELL',
                                                                  link='https://p2p.binance.com/en/trade/sell/USDT?fiat=USD&payment=TinkoffNew',
                                                                  description='Link to sell USDT by Tinkoff USDs on P2P Binance')
-        p2pbin_usdtusd_buy_tinkoff = Link.objects.get_or_create(short_name='USDTUSD_P2PBIN_TINKOFF_BUY',
+        p2pbin_usdtusd_buy_tinkoff = Link.objects.get_or_create(short_name='USDTUSD_P2PBIN_TinkoffNew_BUY',
                                                                  link='https://p2p.binance.com/en/trade/TinkoffNew/USDT?fiat=USD',
                                                                  description='Link to buy USDT by Tinkoff USDs on P2P Binance')
-        p2pbin_busdrub_buy_tinkoff = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_TINKOFF_BUY',
+        p2pbin_busdrub_buy_tinkoff = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_TinkoffNew_BUY',
                                                                 link='https://p2p.binance.com/en/trade/TinkoffNew/BUSD?fiat=RUB',
                                                                 description='Link to buy BUSD by Tinkoff RUBs on P2P Binance')
-        p2pbin_busdrub_sell_tinkoff = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_TINKOFF_SELL',
+        p2pbin_busdrub_sell_tinkoff = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_TinkoffNew_SELL',
                                                                  link='https://p2p.binance.com/en/trade/sell/BUSD?fiat=RUB&payment=TinkoffNew',
                                                                  description='Link to sell BUSD by Tinkoff RUBs on P2P Binance')
-        p2pbin_busdusd_sell_tinkoff = Link.objects.get_or_create(short_name='BUSDUSD_P2PBIN_TINKOFF_SELL',
+        p2pbin_busdusd_sell_tinkoff = Link.objects.get_or_create(short_name='BUSDUSD_P2PBIN_TinkoffNew_SELL',
                                                                  link='https://p2p.binance.com/en/trade/sell/BUSD?fiat=USD&payment=TinkoffNew',
                                                                  description='Link to sell BUSD by Tinkoff USDs on P2P Binance')
-        p2pbin_busdusd_buy_tinkoff = Link.objects.get_or_create(short_name='BUSDUSD_P2PBIN_TINKOFF_BUY',
+        p2pbin_busdusd_buy_tinkoff = Link.objects.get_or_create(short_name='BUSDUSD_P2PBIN_TinkoffNew_BUY',
                                                                 link='https://p2p.binance.com/en/trade/TinkoffNew/BUSD?fiat=USD',
                                                                 description='Link to buy BUSD by Tinkoff USDs on P2P Binance')
             # RAIFFEISEN BANK P2P BINANCE
-        p2pbin_usdtrub_buy_raiffeisen = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_RAIFFEISEN_BUY',
+        p2pbin_usdtrub_buy_raiffeisen = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_RaiffeisenBankRussia_BUY',
                                                                 link='https://p2p.binance.com/en/trade/RaiffeisenBankRussia/USDT?fiat=RUB',
                                                                 description='Link to buy USDT by Raiffeisen RUBs on P2P Binance')
-        p2pbin_usdtrub_sell_raiffeisen = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_RAIFFEISEN_SELL',
+        p2pbin_usdtrub_sell_raiffeisen = Link.objects.get_or_create(short_name='USDTRUB_P2PBIN_RaiffeisenBankRussia_SELL',
                                                                  link='https://p2p.binance.com/en/trade/sell/USDT?fiat=RUB&payment=RaiffeisenBankRussia',
                                                                  description='Link to sell USDT by Raiffeisen RUBs on P2P Binance')
-        p2pbin_busdrub_buy_raiffeisen = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_RAIFFEISEN_BUY',
+        p2pbin_busdrub_buy_raiffeisen = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_RaiffeisenBankRussia_BUY',
                                                                 link='https://p2p.binance.com/en/trade/RaiffeisenBankRussia/BUSD?fiat=RUB',
                                                                 description='Link to buy BUSD by Raiffeisen RUBs on P2P Binance')
-        p2pbin_busdrub_sell_raiffeisen = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_RAIFFEISEN_SELL',
+        p2pbin_busdrub_sell_raiffeisen = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_RaiffeisenBankRussia_SELL',
                                                                  link='https://p2p.binance.com/en/trade/sell/BUSD?fiat=RUB&payment=RaiffeisenBankRussia',
                                                                  description='Link to sell BUSD by Raiffeisen RUBs on P2P Binance')
 
@@ -85,3 +85,7 @@ class Command(BaseCommand):
         p2pbin_busdrub_sell_qiwi = Link.objects.get_or_create(short_name='BUSDRUB_P2PBIN_QIWI_SELL',
                                                                     link='https://p2p.binance.com/en/trade/sell/BUSD?fiat=RUB&payment=QIWI',
                                                                     description='Link to sell BUSD by QIWI RUBs on P2P Binance')
+            # Tinkoff USD change
+        tinkoff_usd_change = Link.objects.get_or_create(short_name='TINKOFF_USD_CHANGE',
+                                                        link='https://www.tinkoff.ru/invest/currencies/USDRUB/',
+                                                        description='Link to change USD to RUB in Tinkoff investments')
