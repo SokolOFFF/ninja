@@ -44,7 +44,7 @@ class P2POrder(models.Model):
     parsing_time = models.DateTimeField(default=now)
     def __str__(self):
         return f'P2P order {self.type} by {self.author} ' \
-               f'for {self.coin} by {self.payment} with {self.rate}'
+               f'for {self.coin} by {self.payment} with {self.rate}. Limits: {self.lower_limit}-{self.upper_limit}'
 
 class Currency(models.Model):
     name = models.CharField(max_length=10, default='USDRUB')
