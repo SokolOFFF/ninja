@@ -39,6 +39,8 @@ class P2POrder(models.Model):
     author = models.CharField(max_length=50)
     coin = models.ForeignKey(Coin, on_delete=models.SET_NULL, null=True)
     type = models.CharField(choices=TYPES_CHOICES, max_length=4)
+    lower_limit = models.FloatField(default=0.0)
+    upper_limit = models.FloatField(default=0.0)
     parsing_time = models.DateTimeField(default=now)
     def __str__(self):
         return f'P2P order {self.type} by {self.author} ' \
@@ -61,3 +63,11 @@ class User(models.Model):
 
     def __str__(self):
         return f'Telegram id: {self.telegram_id}, money amount: {self.money_amount}, spread: {self.spread}, is subs: {self.is_subscribed}'
+
+class Link(models.Model):
+    short_name = models.CharField(max_length=20)
+    link = models.TextField()
+    description = models.TextField()
+
+    def __str__(self):
+        return f'Name: {self.short_name},\n   Link: {self.link},\n   Description: {self.description}'
