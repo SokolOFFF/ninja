@@ -42,13 +42,16 @@ def get_new_p2p_orders():
                 if respond.status_code == 200:
                     try:
                         data = respond.json()['data']
+                        print(data)
                         if not data is None:
                             # TODO: make insertion using only 1 request
                             for order in data:
                                 P2POrder.objects.create(payment=payment, coin=coin,
                                                         rate=float(order['adv']['price']),
                                                         author=order['advertiser']['nickName'],
-                                                        type=trade_type[0], )
+                                                        type=trade_type[0],
+                                                        lower_limit=float(order['adv']['minSingleTransAmount']),
+                                                        upper_limit=float(order['adv']['dynamicMaxSingleTransAmount']))
                         else:
                             print(f'Response is empty. Respond: {respond.json()}')
                     except Exception as e:
