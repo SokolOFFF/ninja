@@ -71,3 +71,11 @@ class Link(models.Model):
 
     def __str__(self):
         return f'Name: {self.short_name},\n   Link: {self.link},\n   Description: {self.description}'
+
+class Circle(models.Model):
+    msg_text = models.TextField()
+    variant = models.IntegerField(default=0)
+    spread = models.FloatField()
+    lower_limit = models.FloatField()
+    upper_limit = models.FloatField()
+    creating_time = models.DateTimeField(default=now)
