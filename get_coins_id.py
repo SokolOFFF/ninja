@@ -1,4 +1,4 @@
-from bestchange_api import BestChange
+from exchange_parser.bestchange_api import BestChange
 
 api = BestChange()
 for id in range(300):
