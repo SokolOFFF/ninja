@@ -100,8 +100,7 @@ class BestchangeExchange(models.Model):
     parsing_time = models.DateTimeField(default=now)
 
 
-class BinanceSpot(models.Model):
-    cryptocurrency = models.ForeignKey(CryptoCurrency, on_delete=models.SET_NULL, null=True)
-    coin = models.ForeignKey(Coin, on_delete=models.SET_NULL, null=True)
-    rate = models.FloatField()
+class BinanceSpotPrice(models.Model):
+    symbol = models.CharField(max_length=20, default="")
+    price = models.FloatField()
     parsing_time = models.DateTimeField(default=now)
