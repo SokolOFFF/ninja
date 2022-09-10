@@ -1,4 +1,4 @@
-from data.models import Fiat, Payment, Coin, Currency, Link, BestchangePayment
+from data.models import Fiat, Payment, Coin, Currency, Link, BestchangePayment, CryptoCurrency
 
 from django.core.management.base import BaseCommand
 
@@ -7,6 +7,10 @@ class Command(BaseCommand):
     help = 'Init data'
 
     def handle(self, *args, **kwargs):
+        coins = ['BTC', 'ETH', 'LTC', 'XRP', 'ADA', 'SOL', 'DOGE', 'DOT', 'TRX', 'SHIB', 'AVAX', 'BNB', 'KMD', 'LUNA',
+                 'MATIC',
+                 'UNI', 'LINK', 'XLM', 'NEAR', 'ATOM', 'XMR', 'ALGO', 'VET', 'MANA', 'XTZ', 'EOS', 'MKR', 'ZEC', 'NEO',
+                 'BAT', 'WAVES']
 
         # Fiats table creation
         rub = Fiat.objects.get_or_create(name='RUB')[0]
@@ -26,6 +30,10 @@ class Command(BaseCommand):
         # Stable coins table creation
         usdt = Coin.objects.get_or_create(name='USDT')[0]
         busd = Coin.objects.get_or_create(name='BUSD')[0]
+
+        # Cryptocurrency table creation
+        for coin in coins:
+            cryptocurrency = CryptoCurrency.objects.get_or_create(name=coin)
 
         # Currency table creation
         usd_rub_rate = Currency.objects.get_or_create(name='USDRUB', figi='USD000UTSTOM')[0]
@@ -91,8 +99,6 @@ class Command(BaseCommand):
                                                         description='Link to change USD to RUB in Tinkoff investments')
 
         # Bestchange payments table creation
-        coins = ['BTC', 'ETH', 'LTC', 'XRP', 'ADA', 'SOL', 'DOGE', 'DOT', 'TRX', 'SHIB', 'AVAX', 'BNB', 'KMD', 'LUNA', 'MATIC',
-                 'UNI', 'LINK', 'XLM', 'NEAR', 'ATOM', 'XMR', 'ALGO', 'VET', 'MANA', 'XTZ', 'EOS', 'MKR', 'ZEC', 'NEO', 'BAT', 'WAVES']
         bestchange_coin_id = { 'BTC': 93, 'ETH': 139, 'LTC': 99, 'XRP': 161, 'ADA': 181, 'SOL': 82, 'DOGE': 115, 'DOT': 201,
             'TRX': 185, 'SHIB': 32, 'AVAX': 217, 'BNB': 16, 'KMD': 134, 'LUNA': 2, 'MATIC': 138, 'UNI': 202, 'LINK': 197, 'XLM': 182,
             'NEAR': 76, 'ATOM': 198, 'XMR': 149, 'ALGO': 216, 'VET': 8, 'MANA': 227, 'XTZ': 175, 'EOS': 178, 'MKR': 213,
