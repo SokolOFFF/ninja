@@ -1,4 +1,4 @@
-from data.models import Fiat, Payment, Coin, Currency, Link
+from data.models import Fiat, Payment, Coin, Currency, Link, BestchangePayment
 
 from django.core.management.base import BaseCommand
 
@@ -89,3 +89,14 @@ class Command(BaseCommand):
         tinkoff_usd_change = Link.objects.get_or_create(short_name='TINKOFF_USD_CHANGE',
                                                         link='https://www.tinkoff.ru/invest/currencies/USDRUB/',
                                                         description='Link to change USD to RUB in Tinkoff investments')
+
+        # Bestchange payments table creation
+        coins = ['BTC', 'ETH', 'LTC', 'XRP', 'ADA', 'SOL', 'DOGE', 'DOT', 'TRX', 'SHIB', 'AVAX', 'BNB', 'KMD', 'LUNA', 'MATIC',
+                 'UNI', 'LINK', 'XLM', 'NEAR', 'ATOM', 'XMR', 'ALGO', 'VET', 'MANA', 'XTZ', 'EOS', 'MKR', 'ZEC', 'NEO', 'BAT', 'WAVES']
+        bestchange_coin_id = { 'BTC': 93, 'ETH': 139, 'LTC': 99, 'XRP': 161, 'ADA': 181, 'SOL': 82, 'DOGE': 115, 'DOT': 201,
+            'TRX': 185, 'SHIB': 32, 'AVAX': 217, 'BNB': 16, 'KMD': 134, 'LUNA': 2, 'MATIC': 138, 'UNI': 202, 'LINK': 197, 'XLM': 182,
+            'NEAR': 76, 'ATOM': 198, 'XMR': 149, 'ALGO': 216, 'VET': 8, 'MANA': 227, 'XTZ': 175, 'EOS': 178, 'MKR': 213,
+            'ZEC': 162, 'NEO': 177, 'BAT': 61, 'WAVES': 133 }
+        bestchange_payment = BestchangePayment.objects.get_or_create(name='QIWI', bestchange_id=63)
+        for coin in coins:
+            bestchange_payment = BestchangePayment.objects.get_or_create(name=coin, bestchange_id=bestchange_coin_id[coin])
