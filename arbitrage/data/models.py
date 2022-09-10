@@ -98,3 +98,10 @@ class BestchangeExchange(models.Model):
     max_sum = models.FloatField()
     exchanger_name = models.CharField(max_length=40)
     parsing_time = models.DateTimeField(default=now)
+
+
+class BinanceSpot(models.Model):
+    cryptocurrency = models.ForeignKey(CryptoCurrency, on_delete=models.SET_NULL, null=True)
+    coin = models.ForeignKey(Coin, on_delete=models.SET_NULL, null=True)
+    rate = models.FloatField()
+    parsing_time = models.DateTimeField(default=now)
