@@ -26,6 +26,11 @@ class Coin(models.Model):
     def __str__(self):
         return self.name
 
+class CryptoCurrency(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
 
 # TODO: add amount range
 # TODO: add order link
@@ -83,6 +88,8 @@ class Circle(models.Model):
 class BestchangePayment(models.Model):
     name = models.CharField(max_length=10)
     bestchange_id = models.IntegerField()
+    def __str__(self):
+        return f'Name: {self.name},\n  Bestchange id: {self.bestchange_id}'
 class BestchangeExchange(models.Model):
     payment_from = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_from")
     payment_to = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_to")
