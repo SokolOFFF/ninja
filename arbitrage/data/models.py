@@ -90,3 +90,4 @@ class BestchangeExchange(models.Model):
     min_sum = models.FloatField()
     max_sum = models.FloatField()
     exchanger_name = models.CharField(max_length=40)
+    parsing_time = models.DateTimeField(default=now)
