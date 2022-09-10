@@ -79,3 +79,14 @@ class Circle(models.Model):
     lower_limit = models.FloatField()
     upper_limit = models.FloatField()
     creating_time = models.DateTimeField(default=now)
+
+class BestchangePayment(models.Model):
+    name = models.CharField(max_length=10)
+    bestchange_id = models.IntegerField()
+class BestchangeExchange(models.Model):
+    payment_from = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_from")
+    payment_to = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_to")
+    rate = models.FloatField()
+    min_sum = models.FloatField()
+    max_sum = models.FloatField()
+    exchanger_name = models.CharField(max_length=40)
