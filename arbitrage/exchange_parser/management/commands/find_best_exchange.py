@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import datetime, timedelta
 
-from data.models import Fiat, P2POrder, Payment, Coin, Currency, Link, Circle, User
+from data.models import Fiat, P2POrder, Payment, Coin, Currency, Link, Circle, User, BestchangePayment, BestchangeExchange, CryptoCurrency, BinanceSpotPrice
 
 from django.core.management.base import BaseCommand
 
@@ -33,7 +33,7 @@ def msg_template(circle_num, profit, order1, order2):
                                                                                 payment=order2.payment.name,
                                                                                 type=order2.type)
 
-        return f'Found exchange rate with {profit:.2f}:' \
+        return f'Found exchange rate with {profit:.2f}%:' \
                f'\n- {order1}' \
                f'\n   link: {Link.objects.get(short_name=link_short_name_order_1).link}' \
                f'\n- {order2}' \
@@ -59,6 +59,21 @@ def msg_template(circle_num, profit, order1, order2):
                f'\n   link: {Link.objects.get(short_name=link_short_name_order_2).link}'
 
 
+def msg_template_v2(circle_num, profit, order1, binance_price, order2):
+    crypto_name = order1.payment_to.name
+    coin_name = order2.coin.name
+    link_to_bestchange = Link.objects.get(short_name=f'QIWI{crypto_name}_BESTCHANGE').link
+    link_to_binance_spot = f'www.binance.com/en/trade/{crypto_name}_{coin_name}?_from=markets&theme=dark&type=spot'
+    link_to_binance_p2p = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=coin_name, fiat='RUB',
+                                                                        payment=order2.payment.name, type=order2.type)
+    return f'Found exchange rate with {profit:.2f}%:' \
+               f'\n- Buy {crypto_name} on Bestchange' \
+               f'\n- {order1}' \
+               f'\n   link: {link_to_bestchange}' \
+               f'\n Sell {crypto_name} by {coin_name} with price: {binance_price}' \
+               f'\n   link: {link_to_binance_spot}' \
+               f'\n- {order2}' \
+               f'\n   link: {Link.objects.get(short_name=link_to_binance_p2p).link}'
 def find_best_exchange():
     print('Trying to find best exchange ...')
     print()
@@ -66,6 +81,8 @@ def find_best_exchange():
     check_var_1()
     print('Looking for the second circle..')
     check_var_2()
+    print('Looking for the third circle..')
+    check_var_3()
     print('Mailing..')
     mailing()
     print('-------------------------------')
@@ -168,6 +185,70 @@ def check_var_2():
                 #print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,profit=(result - 1) * 100))
     #sendAll(msg_template(2, (result - 1) * 100, buy_usd, sell_rub))
 
+def check_var_3():
+    qiwi = BestchangePayment.objects.get(name='QIWI')
+
+    rub = Fiat.objects.get(name='RUB')
+    usdt = Coin.objects.get(name='USDT')
+
+    rub_payments = Payment.objects.filter(fiat=rub).all()
+
+    now = datetime.now()
+    start = now - timedelta(minutes=3)
+
+    old_orders = P2POrder.objects.filter(parsing_time__lte=start)
+    if len(old_orders) > 0:
+        print(' -- Deleting old orders')
+        old_orders.delete()
+
+    old_exchanges = BestchangeExchange.objects.filter(parsing_time__lte=start)
+    if len(old_exchanges) > 0:
+        print(' -- Deleting old exchanges')
+        old_exchanges.delete()
+
+    old_prices = BinanceSpotPrice.objects.filter(parsing_time__lte=start)
+    if len(old_prices) > 0:
+        print(' -- Deleting old prices')
+        old_prices.delete()
+
+    old_circles = Circle.objects.filter(variant=3)
+    if len(old_circles) > 0:
+        print(' -- Deleting old circles')
+        old_circles.delete()
+
+    cryptocurrencies = CryptoCurrency.objects.all()
+    coins = Coin.objects.all()
+
+    for crypto in cryptocurrencies:
+        buy_cryptocurrency = BestchangeExchange.objects.filter(payment_from=qiwi, payment_to=BestchangePayment.objects.get(name=crypto.name),
+                                                               parsing_time__range=[start, now])
+        if len(buy_cryptocurrency) == 0:
+            print('No orders for buying cryptocurrency throw QIWI')
+            return
+        buy_cryptocurrency = sorted(buy_cryptocurrency, key=lambda x: x.rate)
+        for coin in coins:
+            if crypto.name == "KMD" and coin.name == "BUSD":
+                continue
+            binance_spot = BinanceSpotPrice.objects.filter(symbol=crypto.name+coin.name, parsing_time__range=[start, now])
+            if len(binance_spot) == 0:
+                print(f'No prices for buying of {crypto.name}')
+                continue
+            binance_spot_price = binance_spot[0].price
+            sell_rub = P2POrder.objects.filter(type='SELL', payment__in=rub_payments, coin=coin,
+                                               parsing_time__range=[start, now])
+            if len(sell_rub) == 0:
+                print('No orders for buying of RUB')
+                continue
+            sell_rub = sorted(sell_rub, key=lambda x: x.rate, reverse=True)
+            for buy in buy_cryptocurrency:
+                for sell in sell_rub:
+                    result = 1 / buy.rate * binance_spot_price * sell.rate
+                    #print(crypto.name, buy.rate, binance_spot_price, coin.name, sell.rate, result)
+                    #print(result)
+                    if result > 1:
+                        Circle.objects.get_or_create(msg_text=msg_template_v2(3, (result - 1) * 100, buy, binance_spot_price, sell), variant=3,
+                                                     spread=(result - 1) * 100, lower_limit=max(sell.lower_limit, buy.min_sum),
+                                                     upper_limit=min(sell.upper_limit, buy.max_sum))
 
 def mailing():
     subscribers = User.objects.filter(is_subscribed=True)
