@@ -99,6 +99,8 @@ class BestchangeExchange(models.Model):
     exchanger_name = models.CharField(max_length=40)
     parsing_time = models.DateTimeField(default=now)
 
+    def __str__(self):
+        return f'Payment from: {self.payment_from.name}, payment to: {self.payment_to.name}, rate: {self.rate}, exchanger name: {self.exchanger_name}, limits: {self.min_sum}-{self.max_sum}'
 
 class BinanceSpotPrice(models.Model):
     symbol = models.CharField(max_length=20, default="")
