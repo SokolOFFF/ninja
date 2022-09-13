@@ -97,7 +97,29 @@ class Command(BaseCommand):
         tinkoff_usd_change = Link.objects.get_or_create(short_name='TINKOFF_USD_CHANGE',
                                                         link='https://www.tinkoff.ru/invest/currencies/USDRUB/',
                                                         description='Link to change USD to RUB in Tinkoff investments')
+            # Bestchange links
+        bestchange_coin_fullnames = {'BTC': 'bitcoin', 'ETH': 'ethereum-classic', 'LTC': 'litecoin', 'XRP': 'ripple', 'ADA': 'cardano', 'SOL': 'solana', 'DOGE': 'dogecoin',
+                              'DOT': 'polkadot', 'TRX': 'tron', 'SHIB': 'shiba-inu', 'AVAX': 'avalanche', 'BNB': 'binance-coin', 'KMD': 'komodo', 'LUNA': 'terra', 'MATIC': 'polygon',
+                              'UNI': 'uniswap', 'LINK': 'chainlink', 'XLM': 'stellar', 'NEAR': 'near', 'ATOM': 'cosmos', 'XMR': 'monero', 'ALGO': 'algorand', 'VET': 'vechain', 'MANA': 'decentraland', 'XTZ': 'tezos',
+                              'EOS': 'eos', 'MKR': 'maker', 'ZEC': 'zcash', 'NEO': 'neo', 'BAT': 'bat', 'WAVES': 'waves', 'QIWI': 'qiwi'}
 
+        for coin1 in coins:
+            for coin2 in coins:
+                if coin1 != coin2:
+                    bestchange_link = Link.objects.get_or_create(short_name=f'{coin1+coin2}_BESTCHANGE',
+                    link=f'www.bestchange.ru/{bestchange_coin_fullnames[coin1]}-to-{bestchange_coin_fullnames[coin2]}.html',
+                                                                 description=f'Link to bestchange.ru to convert from {coin1} to {coin2}')
+        for coin in coins:
+            coin1 = coin
+            coin2 = 'QIWI'
+            bestchange_link = Link.objects.get_or_create(short_name=f'{coin1 + coin2}_BESTCHANGE',
+                                                         link=f'www.bestchange.ru/{bestchange_coin_fullnames[coin1]}-to-{bestchange_coin_fullnames[coin2]}.html',
+                                                         description=f'Link to bestchange.ru to convert from {coin1} to {coin2}')
+            coin1 = 'QIWI'
+            coin2 = coin
+            bestchange_link = Link.objects.get_or_create(short_name=f'{coin1 + coin2}_BESTCHANGE',
+                                                         link=f'www.bestchange.ru/{bestchange_coin_fullnames[coin1]}-to-{bestchange_coin_fullnames[coin2]}.html',
+                                                         description=f'Link to bestchange.ru to convert from {coin1} to {coin2}')
         # Bestchange payments table creation
         bestchange_coin_id = { 'BTC': 93, 'ETH': 139, 'LTC': 99, 'XRP': 161, 'ADA': 181, 'SOL': 82, 'DOGE': 115, 'DOT': 201,
             'TRX': 185, 'SHIB': 32, 'AVAX': 217, 'BNB': 16, 'KMD': 134, 'LUNA': 2, 'MATIC': 138, 'UNI': 202, 'LINK': 197, 'XLM': 182,
