@@ -26,15 +26,15 @@ class Coin(models.Model):
     def __str__(self):
         return self.name
 
+
 class CryptoCurrency(models.Model):
     name = models.CharField(max_length=10)
 
     def __str__(self):
         return self.name
 
+
 # TODO: add amount range
-# TODO: add order link
-# TODO: add user model
 class P2POrder(models.Model):
     TYPES_CHOICES = (('BUY', 'BUY'),
                      ('SELL', 'SELL')
@@ -47,9 +47,11 @@ class P2POrder(models.Model):
     lower_limit = models.FloatField(default=0.0)
     upper_limit = models.FloatField(default=0.0)
     parsing_time = models.DateTimeField(default=now)
+
     def __str__(self):
         return f'P2P order {self.type} by {self.author} ' \
                f'for {self.coin} by {self.payment} with {self.rate}. Limits: {self.lower_limit} - {self.upper_limit}'
+
 
 class Currency(models.Model):
     name = models.CharField(max_length=10, default='USDRUB')
@@ -60,7 +62,7 @@ class Currency(models.Model):
 
 
 class User(models.Model):
-    telegram_id = models.CharField(max_length= 20)
+    telegram_id = models.CharField(max_length=20)
     money_amount = models.IntegerField(default=15000)
     spread = models.FloatField(default=1.0)
     is_subscribed = models.BooleanField(default=False)
@@ -68,6 +70,7 @@ class User(models.Model):
 
     def __str__(self):
         return f'Telegram id: {self.telegram_id}, money amount: {self.money_amount}, spread: {self.spread}, is subs: {self.is_subscribed}'
+
 
 class Link(models.Model):
     short_name = models.CharField(max_length=20)
@@ -77,6 +80,7 @@ class Link(models.Model):
     def __str__(self):
         return f'Name: {self.short_name},\n   Link: {self.link},\n   Description: {self.description}'
 
+
 class Circle(models.Model):
     msg_text = models.TextField()
     variant = models.IntegerField(default=0)
@@ -85,13 +89,18 @@ class Circle(models.Model):
     upper_limit = models.FloatField()
     creating_time = models.DateTimeField(default=now)
 
+
 class BestchangePayment(models.Model):
     name = models.CharField(max_length=10)
     bestchange_id = models.IntegerField()
+
     def __str__(self):
         return f'Name: {self.name},\n  Bestchange id: {self.bestchange_id}'
+
+
 class BestchangeExchange(models.Model):
-    payment_from = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_from")
+    payment_from = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True,
+                                     related_name="payment_from")
     payment_to = models.ForeignKey(BestchangePayment, on_delete=models.SET_NULL, null=True, related_name="payment_to")
     rate = models.FloatField()
     min_sum = models.FloatField()
@@ -101,6 +110,7 @@ class BestchangeExchange(models.Model):
 
     def __str__(self):
         return f'Payment from: {self.payment_from.name}, payment to: {self.payment_to.name}, rate: {self.rate}, exchanger name: {self.exchanger_name}, limits: {self.min_sum}-{self.max_sum}'
+
 
 class BinanceSpotPrice(models.Model):
     symbol = models.CharField(max_length=20, default="")
