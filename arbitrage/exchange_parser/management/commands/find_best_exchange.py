@@ -9,6 +9,8 @@ from exchange_parser.tinkoff_rates_parser import get_rate_of
 
 from exchange_parser.sender_bot import sendAll
 
+# TODO: write exceptions to avoid code termination
+
 class Command(BaseCommand):
     help = ''
 
@@ -35,11 +37,11 @@ def msg_template(circle_num, profit, order1, order2):
 
         return f'Found exchange rate with {profit:.2f}%:' \
                f'\n- {order1}' \
-               f'\n   link: {Link.objects.get(short_name=link_short_name_order_1).link}' \
+               f'\n   LINK: {Link.objects.get(short_name=link_short_name_order_1).link}' \
                f'\n- {order2}' \
-               f'\n   link: {Link.objects.get(short_name=link_short_name_order_2).link}' \
+               f'\n   LINK: {Link.objects.get(short_name=link_short_name_order_2).link}' \
                f'\n- Exchange on Tinkoff Investments' \
-               f'\n   link: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}'
+               f'\n   LINK: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}'
     elif circle_num == 2:
         link_short_name_order_1 = '{coin}{fiat}_P2PBIN_{payment}_{type}'.format(coin=order1.coin.name,
                                                                                 fiat=order1.payment.fiat.name,
@@ -52,11 +54,11 @@ def msg_template(circle_num, profit, order1, order2):
 
         return f'Found exchange rate with {profit:.2f}:' \
                f'\n- Exchange on Tinkoff Investments' \
-               f'\n   link: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}' \
-               f'\n- {order1}' \
-               f'\n   link: {Link.objects.get(short_name=link_short_name_order_1).link}' \
-               f'\n- {order2}' \
-               f'\n   link: {Link.objects.get(short_name=link_short_name_order_2).link}'
+               f'\n\b   LINK: {Link.objects.get(short_name="TINKOFF_USD_CHANGE").link}' \
+               f'\n\n- {order1}' \
+               f'\n\n   LINK: {Link.objects.get(short_name=link_short_name_order_1).link}' \
+               f'\n\n- {order2}' \
+               f'\n\n   LINK: {Link.objects.get(short_name=link_short_name_order_2).link}'
 
 
 def msg_template_v2(circle_num, profit, order1, binance_price, order2):
@@ -68,26 +70,31 @@ def msg_template_v2(circle_num, profit, order1, binance_price, order2):
                                                                         payment=order2.payment.name, type=order2.type)
     return f'Found exchange rate with {profit:.2f}%:' \
                f'\n- Buy {crypto_name} on Bestchange' \
-               f'\n- {order1}' \
-               f'\n   link: {link_to_bestchange}' \
-               f'\n Sell {crypto_name} by {coin_name} with price: {binance_price}' \
-               f'\n   link: {link_to_binance_spot}' \
-               f'\n- {order2}' \
-               f'\n   link: {Link.objects.get(short_name=link_to_binance_p2p).link}'
+               f'\n\n- {order1}' \
+               f'\n\n   LINK: {link_to_bestchange}' \
+               f'\n\n- Sell {crypto_name} by {coin_name} with price: {binance_price}' \
+               f'\n\n   LINK: {link_to_binance_spot}' \
+               f'\n\n- {order2}' \
+               f'\n\n   LINK: {Link.objects.get(short_name=link_to_binance_p2p).link}'
 def find_best_exchange():
+    # TODO: add threads for all variant to make code work faster
+
     print('Trying to find best exchange ...')
-    print()
-    print('Looking for the first circle..')
+    # CHECKING VARIANT 1 (THROW TINKOFF RUBs FIRST)
     check_var_1()
-    print('Looking for the second circle..')
+
+    # CHECKING VARIANT 2 (THROW TINKOFF USDs FIRST)
     check_var_2()
-    print('Looking for the third circle..')
+
+    # CHECKING VARIANT 3 (THROW BESTCHANGE)
     check_var_3()
-    print('Mailing..')
+
+    # SENDING MESSAGES TO USERS
     mailing()
     print('-------------------------------')
 
 def check_var_1():
+    print('Trying the first circle..')
     USD_RUB = get_rate_of(Currency.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
@@ -127,17 +134,11 @@ def check_var_1():
         for sell in sell_usd:
             result = 1 / buy.rate * sell.rate * USD_RUB
             if result > 1:
-                #print(msg_template(1, (result - 1) * 100, buy, sell))
-                # TODO: understand how to deal with USD limits, for now it's just RUB limits
                 Circle.objects.get_or_create(msg_text=msg_template(1, (result - 1) * 100, buy, sell), variant=1,
                                              spread=(result - 1) * 100, lower_limit=buy.lower_limit, upper_limit=buy.upper_limit)
 
-    #sendAll(msg_template(1, (result - 1) * 100, buy_rub, sell_usd))
-    #print(MSG_TEMPLATE.format(order1=buy_rub, order2=sell_usd,profit=(result - 1) * 100))
-
-
-
 def check_var_2():
+    print('Trying the second circle..')
     USD_RUB = get_rate_of(Currency.objects.get(name='USDRUB').figi)
 
     rub = Fiat.objects.get(name='RUB')
@@ -177,15 +178,10 @@ def check_var_2():
         for sell in sell_rub:
             result = 1 / USD_RUB / buy.rate * sell.rate
             if result > 1:
-                #print(msg_template(2, (result - 1) * 100, buy, sell))
-                # TODO: understand how to deal with USD limits, for now it's just RUB limits
                 Circle.objects.get_or_create(msg_text=msg_template(2, (result - 1) * 100, buy, sell), variant=2,
                                              spread=(result - 1) * 100, lower_limit=sell.lower_limit, upper_limit=sell.upper_limit)
-
-                #print(MSG_TEMPLATE.format(order1=buy_usd, order2=sell_rub,profit=(result - 1) * 100))
-    #sendAll(msg_template(2, (result - 1) * 100, buy_usd, sell_rub))
-
 def check_var_3():
+    print('Trying the third circle..')
     qiwi = BestchangePayment.objects.get(name='QIWI')
 
     rub = Fiat.objects.get(name='RUB')
@@ -243,27 +239,30 @@ def check_var_3():
             for buy in buy_cryptocurrency:
                 for sell in sell_rub:
                     result = 1 / buy.rate * binance_spot_price * sell.rate
-                    #print(crypto.name, buy.rate, binance_spot_price, coin.name, sell.rate, result)
-                    #print(result)
                     if result > 1:
                         Circle.objects.get_or_create(msg_text=msg_template_v2(3, (result - 1) * 100, buy, binance_spot_price, sell), variant=3,
                                                      spread=(result - 1) * 100, lower_limit=max(sell.lower_limit, buy.min_sum),
                                                      upper_limit=min(sell.upper_limit, buy.max_sum))
 
 def mailing():
+    print('Mailing..')
     subscribers = User.objects.filter(is_subscribed=True)
     circles = Circle.objects.all()
     circles = sorted(circles, key=lambda x: x.spread, reverse=True)
     for subscriber in subscribers:
+        send_delta = datetime.now() - subscriber.last_signal_time
+        if send_delta.seconds // 60 < 10:
+            continue
         best_circles = []
         for circle in circles:
-
-            # TODO: fix limits
             if circle.spread >= subscriber.spread and subscriber.money_amount <= circle.upper_limit and subscriber.money_amount >= circle.lower_limit:
                 if len(best_circles) < 5:
                     best_circles.append(circle)
-
+                else:
+                    break
         if len(best_circles) != 0:
+            subscriber.last_signal_time = datetime.now()
+            subscriber.save()
             sendAll(subscriber.telegram_id, f'Found {len(best_circles)} best circles:   ')
             for best_circles in best_circles:
-                sendAll(subscriber.telegram_id, best_circles.msg_text + f'\n{subscriber.money_amount} -> {subscriber.money_amount + subscriber.money_amount / 100 * circle.spread}')
+                sendAll(subscriber.telegram_id, best_circles.msg_text + f'\n Your profit calculation: {subscriber.money_amount} -> {subscriber.money_amount + subscriber.money_amount / 100 * circle.spread}')
