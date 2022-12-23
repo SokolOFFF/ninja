@@ -67,6 +67,7 @@ class User(models.Model):
     spread = models.FloatField(default=1.0)
     is_subscribed = models.BooleanField(default=False)
     is_logged_in = models.BooleanField(default=False)
+    last_signal_time = models.DateTimeField(default=now)
 
     def __str__(self):
         return f'Telegram id: {self.telegram_id}, money amount: {self.money_amount}, spread: {self.spread}, is subs: {self.is_subscribed}'
@@ -109,7 +110,7 @@ class BestchangeExchange(models.Model):
     parsing_time = models.DateTimeField(default=now)
 
     def __str__(self):
-        return f'Payment from: {self.payment_from.name}, payment to: {self.payment_to.name}, rate: {self.rate}, exchanger name: {self.exchanger_name}, limits: {self.min_sum}-{self.max_sum}'
+        return f'Payment from: {self.payment_from.name}, payment to: {self.payment_to.name}, rate: {self.rate}, exchanger name: {self.exchanger_name}, limits: {self.min_sum} - {self.max_sum}'
 
 
 class BinanceSpotPrice(models.Model):
